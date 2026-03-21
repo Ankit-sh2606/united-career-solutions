@@ -37,36 +37,85 @@ export default function ContactPage() {
         name: '',
         email: '',
         phone: '',
-        service: '',
         message: '',
     });
     const [errors, setErrors] = useState({});
     const [showToast, setShowToast] = useState(false);
+    const [submitError, setSubmitError] = useState('');
     const [openFaq, setOpenFaq] = useState(null);
 
     const validate = () => {
         const newErrors = {};
+        
+        // Full Name validation
         if (!formData.name.trim()) newErrors.name = 'Full name is required';
+        else if (formData.name.trim().length < 3) newErrors.name = 'Full name must be at least 3 characters';
+
+        // Email validation
         if (!formData.email.trim()) {
             newErrors.email = 'Email is required';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'Please enter a valid email';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            newErrors.email = 'Please enter a valid email address';
         }
-        if (!formData.message.trim()) newErrors.message = 'Message is required';
+
+        // Phone validation
+        const phoneDigits = formData.phone.replace(/\D/g, "");
+        if (!formData.phone.trim()) {
+            newErrors.phone = 'Phone number is required';
+        } else if (!/^\d+$/.test(phoneDigits) || phoneDigits.length < 10 || phoneDigits.length > 15) {
+            newErrors.phone = 'Phone must be 10-15 digits long';
+        }
+
+        // Message validation
+        if (!formData.message.trim()) {
+            newErrors.message = 'Message is required';
+        } else if (formData.message.trim().length < 5) {
+            newErrors.message = 'Message must be at least 5 characters';
+        }
+
         return newErrors;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitError('');
+        
         const validationErrors = validate();
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
             return;
         }
         setErrors({});
-        setShowToast(true);
-        setFormData({ name: '', email: '', phone: '', service: '', message: '' });
-        setTimeout(() => setShowToast(false), 4000);
+
+        try {
+            const { API_BASE_URL } = await import('@/src/config/api');
+            
+            const response = await fetch(`${API_BASE_URL}/contact`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    fullName: formData.name,
+                    email: formData.email,
+                    phone: formData.phone,
+                    message: formData.message,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setShowToast(true);
+                setFormData({ name: '', email: '', phone: '', message: '' });
+                setTimeout(() => setShowToast(false), 4000);
+            } else {
+                setSubmitError(data.message || 'Something went wrong. Please try again.');
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            setSubmitError('Something went wrong. Please try again.');
+        }
     };
 
     const handleChange = (e) => {
@@ -140,7 +189,7 @@ export default function ContactPage() {
                                             {errors.email && <span className={styles.formError}>{errors.email}</span>}
                                         </div>
                                         <div className={styles.formGroup}>
-                                            <label htmlFor="phone" className={styles.formLabel}>Phone Number</label>
+                                            <label htmlFor="phone" className={styles.formLabel}>Phone Number *</label>
                                             <input
                                                 id="phone"
                                                 name="phone"
@@ -148,27 +197,11 @@ export default function ContactPage() {
                                                 value={formData.phone}
                                                 onChange={handleChange}
                                                 placeholder="+1 (555) 000-0000"
-                                                className={styles.formInput}
+                                                className={`${styles.formInput} ${errors.phone ? styles.error : ''}`}
                                             />
+                                            {errors.phone && <span className={styles.formError}>{errors.phone}</span>}
                                         </div>
-                                        <div className={styles.formGroup}>
-                                            <label htmlFor="service" className={styles.formLabel}>Service Interested In</label>
-                                            <select
-                                                id="service"
-                                                name="service"
-                                                value={formData.service}
-                                                onChange={handleChange}
-                                                className={styles.formSelect}
-                                            >
-                                                <option value="">Select a service</option>
-                                                <option value="resume">Professional Resume Writing</option>
-                                                <option value="linkedin">LinkedIn Profile Optimization</option>
-                                                <option value="communication">Email & Communication Support</option>
-                                                <option value="marketing">Job Marketing & Scheduling</option>
-                                                <option value="interview">Interview Preparation</option>
-                                                <option value="endtoend">End-to-End Support Package</option>
-                                            </select>
-                                        </div>
+
                                         <div className={`${styles.formGroup} ${styles.formGroupFull}`}>
                                             <label htmlFor="message" className={styles.formLabel}>Message *</label>
                                             <textarea
@@ -188,6 +221,7 @@ export default function ContactPage() {
                                                 <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
                                             </svg>
                                         </button>
+                                        {submitError && <div className={styles.formError} style={{ marginTop: '10px', gridColumn: '1 / -1', textAlign: 'center' }}>{submitError}</div>}
                                     </div>
                                 </form>
                             </div>
@@ -319,7 +353,7 @@ export default function ContactPage() {
                     >
                         <div className={styles.toastIcon}>✓</div>
                         <div>
-                            <div className={styles.toastText}>Message Sent Successfully!</div>
+                            <div className={styles.toastText}>Your message has been sent successfully.</div>
                             <div className={styles.toastSub}>We&apos;ll get back to you within 24 hours.</div>
                         </div>
                     </motion.div>
