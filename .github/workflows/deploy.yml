@@ -1,0 +1,45 @@
+name: Deploy Monorepo
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'admin/**'
+      - 'backend/**'
+      - 'user/**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [admin, backend, user]
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: './${{ matrix.service }}/package-lock.json'
+
+      - name: Install & Build
+        working-directory: ./${{ matrix.service }}
+        run: |
+          npm install
+          npm run build 
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.TARGET_DIR }}/${{ matrix.service }}
+            git pull origin main
+            npm install --production
+            
+            pm2 restart ${{ matrix.service }} || pm2 start npm --name "${{ matrix.service }}" -- start
