@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const ContactSchema = new mongoose.Schema({
   fullName: {
     type: String,
-    required: [true, "Full name is required"],
+    required: false,
     trim: true,
   },
   email: {
@@ -18,7 +18,7 @@ const ContactSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: [true, "Phone number is required"],
+    required: false,
     trim: true,
   },
   message: {
@@ -26,6 +26,12 @@ const ContactSchema = new mongoose.Schema({
     required: [true, "Message is required"],
     trim: true,
   },
+  firstName: { type: String, trim: true },
+  lastName: { type: String, trim: true },
+  role: { type: String, enum: ["Candidate", "Employer"] },
+  company: { type: String, trim: true },
+  linkedin: { type: String, trim: true },
+  isRead: { type: Boolean, default: false },
   createdAt: {
     type: Date,
     default: Date.now,

@@ -2,14 +2,21 @@
  * Validate contact form input fields.
  * Returns an object with `isValid` boolean and `errors` array.
  */
-export function validateContactInput({ fullName, email, phone, message }) {
+export function validateContactInput({ firstName, lastName, email, role, company, linkedin, message }) {
   const errors = [];
 
-  // Full Name validation
-  if (!fullName || typeof fullName !== "string" || fullName.trim().length === 0) {
-    errors.push("Full name is required");
-  } else if (fullName.trim().length < 3) {
-    errors.push("Full name must be at least 3 characters long");
+  // First Name validation
+  if (!firstName || typeof firstName !== "string" || firstName.trim().length === 0) {
+    errors.push("First name is required");
+  } else if (firstName.trim().length < 2) {
+    errors.push("First name must be at least 2 characters long");
+  }
+
+  // Last Name validation
+  if (!lastName || typeof lastName !== "string" || lastName.trim().length === 0) {
+    errors.push("Last name is required");
+  } else if (lastName.trim().length < 2) {
+    errors.push("Last name must be at least 2 characters long");
   }
 
   // Email validation
@@ -20,14 +27,27 @@ export function validateContactInput({ fullName, email, phone, message }) {
     errors.push("Please provide a valid email address");
   }
 
-  // Phone validation
-  const phoneDigitsOnly = phone ? phone.toString().replace(/\D/g, "") : "";
-  if (!phone || phone.toString().trim().length === 0) {
-    errors.push("Phone number is required");
-  } else if (!/^\d+$/.test(phoneDigitsOnly)) {
-    errors.push("Phone number must contain only digits");
-  } else if (phoneDigitsOnly.length < 10 || phoneDigitsOnly.length > 15) {
-    errors.push("Phone number must be between 10 and 15 digits");
+  // Role validation
+  if (!role || typeof role !== "string") {
+    errors.push("Role is required");
+  } else if (role !== "Candidate" && role !== "Employer") {
+    errors.push("Role must be Candidate or Employer");
+  }
+
+  // Company validation
+  if (role === "Employer") {
+    if (!company || typeof company !== "string" || company.trim().length === 0) {
+      errors.push("Company name is required for employers");
+    }
+  }
+
+  // LinkedIn validation
+  if (role === "Candidate") {
+    if (!linkedin || typeof linkedin !== "string" || linkedin.trim().length === 0) {
+      errors.push("LinkedIn profile URL is required for candidates");
+    } else if (!linkedin.includes("linkedin.com/")) {
+      errors.push("Please provide a valid LinkedIn profile URL");
+    }
   }
 
   // Message validation

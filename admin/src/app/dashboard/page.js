@@ -1,51 +1,86 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import ContactTable from '@/components/ContactTable';
+import { API_BASE_URL } from '@/config/api';
 
 export default function DashboardPage() {
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const fetchUnreadCount = useCallback(async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) return;
+      const res = await fetch(`${API_BASE_URL}/admin/contacts`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success && data.data) {
+        setUnreadCount(data.data.filter(c => !c.isRead).length);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem('admin_token');
-    
-    // Auth protection for the dashboard page itself
     if (!token) {
       router.replace('/login');
     } else {
       setIsAuthorized(true);
+      fetchUnreadCount();
     }
-  }, [router]);
+  }, [router, fetchUnreadCount]);
 
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
     router.push('/login');
   };
 
-  // Don't render the dashboard frame until checking localStorage prevents flicker
   if (!isAuthorized) {
-    return null; 
+    return null;
   }
 
   return (
-    <main className="dashboard-container">
-      <div className="dashboard-header">
-        <h1>Admin Dashboard</h1>
-        <button onClick={handleLogout} className="btn-logout">
-          Logout
-        </button>
-      </div>
-      
-      <section>
-        <h2>Contact Form Submissions</h2>
-        <p style={{ marginBottom: '1.5rem', color: '#666' }}>
-          Below is a list of all inquiries received via the frontend contact form.
-        </p>
-        
-        <ContactTable />
-      </section>
-    </main>
+    <div className="app-layout">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar-header">
+          <h2>Admin Panel</h2>
+          <p>United Career Solutions</p>
+        </div>
+        <nav>
+          <div className="nav-item">
+            <span>Contact Submissions</span>
+            {unreadCount > 0 && (
+              <span className="badge-unread">{unreadCount}</span>
+            )}
+          </div>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="main-content">
+        <div className="dashboard-header">
+          <h1>Dashboard</h1>
+          <button onClick={handleLogout} className="btn-logout">
+            Logout
+          </button>
+        </div>
+
+        <section>
+          <h2>Inbox</h2>
+          <p style={{ marginBottom: '1.5rem', color: '#666' }}>
+            Manage recent contact inquiries.
+          </p>
+
+          <ContactTable onUpdateUnreadCount={fetchUnreadCount} />
+        </section>
+      </main>
+    </div>
   );
 }

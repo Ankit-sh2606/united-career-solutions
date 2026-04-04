@@ -28,9 +28,12 @@ export async function POST(request) {
 
     // Sanitize and save
     const contact = await Contact.create({
-      fullName: body.fullName.trim(),
+      firstName: body.firstName?.trim(),
+      lastName: body.lastName?.trim(),
       email: body.email.trim().toLowerCase(),
-      phone: body.phone.toString().trim(),
+      role: body.role,
+      company: body.company?.trim(),
+      linkedin: body.linkedin?.trim(),
       message: body.message.trim(),
     });
 
