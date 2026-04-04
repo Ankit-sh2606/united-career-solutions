@@ -30,11 +30,11 @@ export async function POST(request) {
     const contact = await Contact.create({
       firstName: body.firstName?.trim(),
       lastName: body.lastName?.trim(),
-      email: body.email.trim().toLowerCase(),
+      email: body.email?.trim()?.toLowerCase(),
       role: body.role,
       company: body.company?.trim(),
       linkedin: body.linkedin?.trim(),
-      message: body.message.trim(),
+      message: body.message?.trim(),
     });
 
     return successResponse(

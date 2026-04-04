@@ -8,13 +8,9 @@ const ContactSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, "Email is required"],
+    required: false,
     trim: true,
     lowercase: true,
-    match: [
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      "Please provide a valid email address",
-    ],
   },
   phone: {
     type: String,
@@ -23,12 +19,12 @@ const ContactSchema = new mongoose.Schema({
   },
   message: {
     type: String,
-    required: [true, "Message is required"],
+    required: false,
     trim: true,
   },
   firstName: { type: String, trim: true },
   lastName: { type: String, trim: true },
-  role: { type: String, enum: ["Candidate", "Employer"] },
+  role: { type: String, required: false },
   company: { type: String, trim: true },
   linkedin: { type: String, trim: true },
   isRead: { type: Boolean, default: false },
