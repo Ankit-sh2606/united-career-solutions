@@ -1,233 +1,135 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import ScrollReveal from '@/components/ScrollReveal';
-import styles from './about.module.css';
-
-const values = [
-    { icon: '🤝', title: 'Integrity', desc: 'Honest, transparent communication at every step' },
-    { icon: '⭐', title: 'Excellence', desc: 'Relentless pursuit of the highest quality outcomes' },
-    { icon: '❤️', title: 'Client-First', desc: 'Your success is our sole measure of achievement' },
-    { icon: '💡', title: 'Innovation', desc: 'Continuously evolving our methods and strategies' },
-    { icon: '🌍', title: 'Global Vision', desc: 'Deep understanding of international career markets' },
-];
-
-const team = [
-    { name: 'Michael Chen', role: 'Founder & CEO', emoji: '👨‍💼', image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&q=80' },
-    { name: 'Ananya Sharma', role: 'Head of Career Services', emoji: '👩‍💼', image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&q=80' },
-    { name: 'David Brooks', role: 'Senior Resume Strategist', emoji: '👨‍💻', image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&q=80' },
-    { name: 'Sofia Martinez', role: 'Client Relations Manager', emoji: '👩‍🏫', image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop&q=80' },
-];
-
-const differentiators = [
-    { icon: '📢', title: 'We Market YOU', desc: 'We don\'t just write resumes — we actively market your profile to recruiters and hiring managers every day.' },
-    { icon: '🔄', title: 'End-to-End Support', desc: 'From your first consultation to post-placement check-ins, we handle everything so you can focus on your career.' },
-    { icon: '🌐', title: 'Deep Market Knowledge', desc: 'Our team has extensive experience with US and UK hiring processes, compliance requirements, and industry norms.' },
-];
-
-const containerVariants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] } },
-};
+import { motion } from "framer-motion";
+import Card from "@/components/ui/Card";
+import Button from "@/components/ui/Button";
+import AnimatedHeadline from "@/components/ui/AnimatedHeadline";
+import TypewriterText from "@/components/ui/TypewriterText";
+import { useScrollReady } from "@/hooks/useScrollReady";
 
 export default function AboutPage() {
+    const ready = useScrollReady(500);
     return (
         <>
-            {/* Hero */}
-            <section className={styles.pageHero}>
-                <div className={styles.pageHeroContent}>
-                    <div className="container">
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                        >
-                            <h1 className={styles.pageTitle}>
-                                About <span className="gradient-text">United Career Solutions</span>
-                            </h1>
-                            <p className={styles.pageSubtitle}>
-                                Bridging the gap between international talent and global opportunity since day one.
-                            </p>
-                        </motion.div>
+            {/* HERO */}
+            <section className="relative pt-40 pb-24 px-6 overflow-hidden bg-brand-bg min-h-[60vh] flex items-center justify-center">
+                <div className="absolute inset-0 -z-10 overflow-hidden">
+                    <motion.div
+                        animate={{ scale: [1, 1.1, 1], x: [0, 80, 0], y: [0, -80, 0] }}
+                        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                        className="absolute top-0 -left-1/4 w-[600px] h-[600px] bg-brand-accent/15 rounded-full blur-[140px]"
+                    />
+                    <motion.div
+                        animate={{ scale: [1, 1.2, 1], x: [0, -60, 0], y: [0, 80, 0] }}
+                        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                        className="absolute -bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-brand-secondary/15 rounded-full blur-[120px]"
+                    />
+                </div>
+
+                <div className="max-w-4xl mx-auto text-center relative z-10 w-full">
+                    <AnimatedHeadline
+                        text="We Are United Career Solutions"
+                        delay={0.2}
+                        className="text-5xl md:text-6xl font-bold leading-tight mb-6 text-brand-dark justify-center mb-6"
+                    />
+
+                    <div className="min-h-[60px]">
+                        <TypewriterText
+                            text="Bridging the gap between outstanding global talent and forward-thinking companies in the US and UK."
+                            delay={0.8}
+                            className="text-xl text-brand-muted max-w-2xl mx-auto leading-relaxed"
+                        />
                     </div>
                 </div>
             </section>
 
-            {/* Story Section */}
-            <section className={styles.story}>
-                <div className="container">
-                    <ScrollReveal>
-                        <div className={styles.storyGrid}>
-                            <div className={styles.storyContent}>
-                                <span className={styles.storyLabel}>Our Story</span>
-                                <h2 className={styles.storyTitle}>
-                                    Empowering Careers Across Borders
-                                </h2>
-                                <p className={styles.storyText}>
-                                    United Career Solutions was founded with a singular vision: to empower
-                                    international professionals with the tools, guidance, and support needed
-                                    to thrive in the world&apos;s most competitive job markets.
-                                </p>
-                                <p className={styles.storyText}>
-                                    We understand the unique challenges that international candidates face —
-                                    from navigating unfamiliar hiring processes to competing against local
-                                    talent. Our team of experienced career professionals has helped hundreds
-                                    of candidates successfully land roles across the United States and
-                                    United Kingdom.
-                                </p>
-                                <p className={styles.storyText}>
-                                    Our approach goes far beyond traditional career services. We don&apos;t
-                                    just polish your resume and send you on your way. We become your dedicated
-                                    career partner, actively marketing your profile, preparing you for every
-                                    interview, and standing beside you until you&apos;re successfully placed.
-                                </p>
-                            </div>
-                            <div className={styles.storyImage}>
-                                <Image
-                                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&h=500&fit=crop&q=80"
-                                    alt="Team collaboration in modern office"
-                                    width={600}
-                                    height={500}
-                                    style={{ width: '100%', height: 'auto', display: 'block' }}
-                                />
-                            </div>
-                        </div>
-                    </ScrollReveal>
-
-                    {/* Mission & Vision */}
-                    <ScrollReveal delay={0.2}>
-                        <div className={styles.missionVision}>
-                            <div className={styles.mvCard}>
-                                <div className={styles.mvIcon}>🎯</div>
-                                <h3 className={styles.mvTitle}>Our Mission</h3>
-                                <p className={styles.mvText}>
-                                    To empower international professionals with comprehensive career support,
-                                    bridging the gap between talent and opportunity in global markets. We are
-                                    committed to providing personalized, end-to-end services that maximize
-                                    every candidate&apos;s potential for success.
-                                </p>
-                            </div>
-                            <div className={styles.mvCard}>
-                                <div className={styles.mvIcon}>🔭</div>
-                                <h3 className={styles.mvTitle}>Our Vision</h3>
-                                <p className={styles.mvText}>
-                                    To be the most trusted career partner for international candidates seeking
-                                    success in the USA and UK job markets. We envision a world where geographic
-                                    boundaries don&apos;t limit career growth, and every talented professional
-                                    has access to global opportunities.
-                                </p>
-                            </div>
-                        </div>
-                    </ScrollReveal>
-                </div>
-            </section>
-
-            {/* Values */}
-            <section className={styles.values}>
-                <div className="container">
-                    <ScrollReveal>
-                        <div className="section__header">
-                            <span className="section__label">Our Values</span>
-                            <h2 className="section__title">What Drives Us</h2>
-                            <p className="section__subtitle">
-                                The principles that guide every interaction and decision we make.
+            {/* STORY & MISSION */}
+            <section className="py-24 px-6 bg-white border-y border-brand-border">
+                <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16">
+                    <motion.div
+                        initial={{ opacity: 0, x: -50 }}
+                        whileInView={ready ? { opacity: 1, x: 0 } : undefined}
+                        viewport={ready ? { once: true, amount: 0.2 } : undefined}
+                        transition={{ duration: 0.6, ease: "easeOut" }}
+                    >
+                        <h2 className="text-3xl md:text-4xl mb-6 text-brand-dark">Our Story</h2>
+                        <div className="space-y-4 text-brand-dark/80 leading-relaxed text-lg">
+                            <p>
+                                We started with a simple observation: the hiring market is fundamentally broken for both sides. Talented candidates send hundreds of resumes into the void, while companies drown in unqualified applications.
+                            </p>
+                            <p>
+                                United Career Solutions was founded to introduce strategy, precision, and human connection back into the equation. We act as a specialized bridge, focusing heavily on the nuances of the US and UK markets.
+                            </p>
+                            <p>
+                                Today, we are proud to have placed hundreds of candidates and partnered with leading tech firms, startups, and enterprises to build their dream teams.
                             </p>
                         </div>
-                    </ScrollReveal>
+                    </motion.div>
 
                     <motion.div
-                        className={styles.valuesGrid}
-                        variants={containerVariants}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, amount: 0.2 }}
+                        initial={{ opacity: 0, x: 50 }}
+                        whileInView={ready ? { opacity: 1, x: 0 } : undefined}
+                        viewport={ready ? { once: true, amount: 0.2 } : undefined}
+                        transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
                     >
-                        {values.map((value, i) => (
-                            <motion.div key={i} className={styles.valueCard} variants={itemVariants}>
-                                <div className={styles.valueIcon}>{value.icon}</div>
-                                <h3 className={styles.valueTitle}>{value.title}</h3>
-                                <p className={styles.valueDesc}>{value.desc}</p>
-                            </motion.div>
-                        ))}
+                        <h2 className="text-3xl md:text-4xl mb-6 text-brand-dark">Our Mission</h2>
+                        <Card hoverEffect={false} className="bg-brand-bg shadow-inner border-0 h-full">
+                            <p className="text-xl font-medium text-brand-dark leading-relaxed italic mb-8">
+                                "To democratize access to top global opportunities by completely removing friction from the hiring process."
+                            </p>
+                            <div className="space-y-4">
+                                <h4 className="font-bold text-brand-dark">Core Values:</h4>
+                                <ul className="space-y-3">
+                                    <li className="flex items-center gap-3 text-brand-dark/80"><span className="w-2 h-2 rounded-full bg-brand-accent"></span> Total Transparency</li>
+                                    <li className="flex items-center gap-3 text-brand-dark/80"><span className="w-2 h-2 rounded-full bg-brand-accent"></span> Precision & Speed</li>
+                                    <li className="flex items-center gap-3 text-brand-dark/80"><span className="w-2 h-2 rounded-full bg-brand-accent"></span> Human-Centric Focus</li>
+                                </ul>
+                            </div>
+                        </Card>
                     </motion.div>
                 </div>
             </section>
 
-            {/* Team */}
-            <section className={styles.team}>
-                <div className="container">
-                    <ScrollReveal>
-                        <div className="section__header">
-                            <span className="section__label">Our Team</span>
-                            <h2 className="section__title">Meet the Experts</h2>
-                            <p className="section__subtitle">
-                                A passionate team of career professionals dedicated to your success.
-                            </p>
-                        </div>
-                    </ScrollReveal>
+            {/* TEAM (Placeholder) */}
+            <section className="py-24 px-6 bg-brand-bg">
+                <div className="max-w-6xl mx-auto text-center">
+                    <h2 className="text-4xl md:text-5xl mb-4">Meet the Experts</h2>
+                    <p className="text-xl text-brand-muted mb-16">The strategists behind your next big career move or hire.</p>
 
-                    <motion.div
-                        className={styles.teamGrid}
-                        variants={containerVariants}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, amount: 0.1 }}
-                    >
-                        {team.map((member, i) => (
-                            <motion.div key={i} className={styles.teamCard} variants={itemVariants}>
-                                <div className={styles.teamImageWrapper}>
-                                    <Image
-                                        src={member.image}
-                                        alt={member.name}
-                                        width={400}
-                                        height={400}
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+                        {[
+                            { name: "Alex Mercer", role: "CEO & Founder" },
+                            { name: "Samantha Lee", role: "Head of US Placements" },
+                            { name: "David Chen", role: "Head of UK Placements" },
+                            { name: "Emily Watson", role: "Director of Employer Partnerships" },
+                        ].map((member, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 60 }}
+                                whileInView={ready ? { opacity: 1, y: 0 } : undefined}
+                                viewport={ready ? { once: true, amount: 0.2 } : undefined}
+                                transition={{ delay: i * 0.1, duration: 0.6, ease: "easeOut" }}
+                                className="group cursor-pointer"
+                            >
+                                <div className="aspect-[4/5] bg-brand-border/30 rounded-2xl mb-6 overflow-hidden relative">
+                                    {/* Placeholder Avatar */}
+                                    <div className="absolute inset-0 bg-brand-dark/5 group-hover:bg-brand-accent/20 transition-colors flex items-center justify-center text-brand-muted/20">
+                                        <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                                    </div>
                                 </div>
-                                <div className={styles.teamInfo}>
-                                    <h3 className={styles.teamName}>{member.name}</h3>
-                                    <p className={styles.teamRole}>{member.role}</p>
-                                </div>
+                                <h3 className="text-xl font-bold font-heading text-brand-dark">{member.name}</h3>
+                                <p className="text-brand-muted">{member.role}</p>
                             </motion.div>
                         ))}
-                    </motion.div>
+                    </div>
                 </div>
             </section>
 
-            {/* Differentiators */}
-            <section className={styles.differentiators}>
-                <div className="container">
-                    <ScrollReveal>
-                        <div className="section__header">
-                            <span className="section__label">Why We&apos;re Different</span>
-                            <h2 className="section__title">What Sets Us Apart</h2>
-                            <p className="section__subtitle">
-                                We go beyond traditional services to deliver real, measurable career results.
-                            </p>
-                        </div>
-                    </ScrollReveal>
-
-                    <motion.div
-                        className={styles.diffGrid}
-                        variants={containerVariants}
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, amount: 0.2 }}
-                    >
-                        {differentiators.map((diff, i) => (
-                            <motion.div key={i} className={styles.diffCard} variants={itemVariants}>
-                                <div className={styles.diffIcon}>{diff.icon}</div>
-                                <h3 className={styles.diffTitle}>{diff.title}</h3>
-                                <p className={styles.diffDesc}>{diff.desc}</p>
-                            </motion.div>
-                        ))}
-                    </motion.div>
+            {/* CTA */}
+            <section className="py-24 px-6 bg-brand-dark text-white text-center">
+                <div className="max-w-3xl mx-auto">
+                    <h2 className="text-4xl mb-8">Let's Work Together</h2>
+                    <Button href="/contact">Contact Our Team</Button>
                 </div>
             </section>
         </>

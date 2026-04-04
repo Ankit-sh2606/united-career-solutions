@@ -1,371 +1,365 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import ScrollReveal from '@/components/ScrollReveal';
-import AnimatedCounter from '@/components/AnimatedCounter';
-import styles from './home.module.css';
+import { motion } from "framer-motion";
+import Button from "@/components/ui/Button";
+import Card from "@/components/ui/Card";
+import AnimatedCounter from "@/components/ui/AnimatedCounter";
+import SectionHeading from "@/components/ui/SectionHeading";
+import AnimatedHeadline from "@/components/ui/AnimatedHeadline";
+import TypewriterText from "@/components/ui/TypewriterText";
+import FloatingBadge from "@/components/ui/FloatingBadge";
+import InfiniteMarquee from "@/components/ui/InfiniteMarquee";
+import { useScrollReady } from "@/hooks/useScrollReady";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 
-const services = [
-  {
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
-      </svg>
-    ),
-    title: 'Professional Resume Writing',
-    description: 'ATS-optimized, role-specific resumes designed to increase shortlisting for full-time, contract, and consulting roles.',
-  },
-  {
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" />
-      </svg>
-    ),
-    title: 'LinkedIn Optimization',
-    description: 'End-to-end profile makeover with recruiter-friendly visibility and keyword optimization aligned with your target roles.',
-  },
-  {
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" />
-      </svg>
-    ),
-    title: 'Job Marketing & Scheduling',
-    description: 'Active job marketing to recruiters and hiring partners with daily submissions ensuring continuous interview generation.',
-  },
-  {
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-      </svg>
-    ),
-    title: 'Interview Preparation',
-    description: 'Role-specific technical, behavioral, and client interview guidance with mock interviews and real-time feedback.',
-  },
-  {
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" />
-      </svg>
-    ),
-    title: 'Communication Support',
-    description: 'Professional email setup and recruiter communication management with follow-ups aligned to US/UK hiring etiquette.',
-  },
-  {
-    icon: (
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      </svg>
-    ),
-    title: 'End-to-End Support',
-    description: 'Background check guidance, offer negotiation, onboarding assistance, and continuous support until successful placement.',
-  },
-];
+// Safe SVG Icons
+const CheckCircle = () => (
+  <svg className="w-6 h-6 text-brand-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+);
 
-const stats = [
-  { number: 500, suffix: '+', label: 'Candidates Placed' },
-  { number: 98, suffix: '%', label: 'Client Satisfaction' },
-  { number: 20, suffix: '+', label: 'Countries Served' },
-  { number: 24, suffix: '/7', label: 'Dedicated Support' },
-];
+const UserIcon = () => (
+  <svg className="w-8 h-8 text-brand-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+  </svg>
+);
 
-const whyChoose = [
-  { icon: '🎯', title: 'Dedicated Support Team', description: 'A personal career strategist assigned to guide you through every step of the process.' },
-  { icon: '📄', title: 'ATS-Optimized Resumes', description: 'Resumes engineered to pass Applicant Tracking Systems and catch recruiter attention.' },
-  { icon: '🌍', title: 'Global Network', description: 'Connections with recruiters and hiring managers across US and UK markets.' },
-  { icon: '🔄', title: 'End-to-End Process', description: 'From documentation to placement — we handle everything so you can focus on your career.' },
-];
+const BriefcaseIcon = () => (
+  <svg className="w-8 h-8 text-brand-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+    <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+  </svg>
+);
+
+const StarIcon = () => (
+  <svg className="w-5 h-5 text-brand-accent" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+  </svg>
+);
 
 const testimonials = [
-  {
-    text: "The resume and LinkedIn overhaul was a game-changer. Within weeks, I noticed a 4x increase in recruiter outreach. The team's deep understanding of the tech market made all the difference in landing my senior role.",
-    name: 'Sarah J.',
-    role: 'Software Engineering Manager, NY',
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&h=100&fit=crop&q=80',
-  },
-  {
-    text: "I struggled with navigating the UK hiring process as an international candidate. United Career Solutions provided exceptional end-to-end support, right from optimizing my profile to mock interviews.",
-    name: 'Rahul M.',
-    role: 'Data Scientist, London',
-    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&q=80',
-  },
-  {
-    text: "The job marketing service essentially put my applications on autopilot. It took the stress off my shoulders. Thanks to their continuous interview generation, I successfully secured a consulting role.",
-    name: 'Elena V.',
-    role: 'Product Designer, Austin',
-    image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=100&h=100&fit=crop&q=80',
-  },
-  {
-    text: "Their interview prep sessions were incredibly thorough. They helped me understand what US companies look for and coached me through multiple rounds. I landed my dream role within two months.",
-    name: 'James K.',
-    role: 'Cloud Architect, Seattle',
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&q=80',
-  },
-  {
-    text: "As someone transitioning careers, I needed more than just a resume update. United Career Solutions repositioned my entire professional brand and opened doors I didn't know existed.",
-    name: 'Priya S.',
-    role: 'Business Analyst, Chicago',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&q=80',
-  },
+  { name: "Sarah J.", role: "Software Engineer, Placed in US", text: "I struggled for months getting AI rejections. UCS completely rebuilt my strategy and within 4 weeks, I had 3 offers." },
+  { name: "Mark D.", role: "Hiring Manager, FinTech", text: "We were drowning in unqualified resumes. UCS brought us 4 pre-vetted senior devs in 72 hours. Outstanding service." },
+  { name: "Priya M.", role: "Data Scientist, Placed in UK", text: "They don't just apply for jobs—they actively network for you. My portfolio was positioned perfectly for the UK market." },
+  { name: "David L.", role: "VP of Engineering", text: "Speed and quality. That's what you get. Every candidate we interviewed from them was a solid fit." },
+  { name: "Elena R.", role: "Product Manager, Placed in US", text: "The interview prep was game-changing. I walked into my FAANG interviews feeling completely prepared and confident." },
+  { name: "James W.", role: "Startup Founder", text: "As a small team, we don't have an internal recruiter. UCS acts as our strategic partner for rapid scaling." },
 ];
 
-const containerVariants = {
-  hidden: {},
-  visible: {
-    transition: { staggerChildren: 0.1 },
-  },
-};
+export default function Home() {
+  const ready = useScrollReady(500);
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] },
-  },
-};
-
-export default function HomePage() {
   return (
     <>
-      {/* ===== Hero Section ===== */}
-      <section className={styles.hero}>
-        <div className={styles.heroBg} />
-        <div className="container">
-          <div className={styles.heroGrid}>
+      {/* 1. HERO SECTION */}
+      <section className="relative min-h-[90vh] flex flex-col justify-center items-center overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 -z-10 bg-brand-bg">
+          <motion.div
+            animate={{ scale: [1, 1.1, 1], x: [0, 80, 0], y: [0, -80, 0] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] bg-brand-accent/15 rounded-full blur-[140px]"
+          />
+          <motion.div
+            animate={{ scale: [1, 1.2, 1], x: [0, -60, 0], y: [0, 80, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute -bottom-1/4 -right-1/4 w-[500px] h-[500px] bg-brand-secondary/15 rounded-full blur-[120px]"
+          />
+          {/* Drifting Particles */}
+          {[...Array(8)].map((_, i) => (
             <motion.div
-              className={styles.heroContent}
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
-            >
-              <div className={styles.heroBadge}>
-                <span className={styles.heroBadgeDot} />
-                Trusted by 500+ Professionals Worldwide
-              </div>
-              <h1 className={styles.heroTitle}>
-                End-to-End Career Support for{' '}
-                <span className={styles.heroAccent}>Global Success</span>
-              </h1>
-              <p className={styles.heroSubtext}>
-                We provide comprehensive services to help international candidates secure interviews
-                and succeed in competitive US and UK job markets. From documentation to active
-                marketing and interview readiness.
-              </p>
-              <div className={styles.heroCta}>
-                <Link href="/services" className="btn btn--primary btn--large">
-                  Explore Services
-                </Link>
-                <Link href="/contact" className="btn btn--secondary btn--large">
-                  Contact Us
-                </Link>
-              </div>
-            </motion.div>
+              key={`particle-${i}`}
+              animate={{
+                y: [0, -40 * (i + 1), 0],
+                x: [0, 25 * (i % 2 === 0 ? 1 : -1), 0],
+                opacity: [0.3, 0.8, 0.3],
+                rotate: [0, 180, 360]
+              }}
+              transition={{ duration: 6 + i, repeat: Infinity, ease: "linear" }}
+              className="absolute w-2 h-2 rounded-sm bg-brand-accent opacity-40 blur-[1px]"
+              style={{
+                top: `${15 + i * 10}%`,
+                left: `${10 + i * 12}%`
+              }}
+            />
+          ))}
+        </div>
 
-            <motion.div
-              className={styles.heroImageWrapper}
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-            >
-              <div className={styles.heroImageContainer}>
-                <div className={styles.heroImageGlow} />
-                <Image
-                  src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=400&fit=crop&q=80"
-                  alt="Professional team collaborating in modern office"
-                  width={600}
-                  height={400}
-                  priority
-                  style={{ display: 'block', width: '100%', height: 'auto' }}
-                />
-              </div>
-              <motion.div
-                className={styles.heroFloatingCard}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1, duration: 0.6 }}
-              >
-                <div className={`${styles.floatingIcon} ${styles.floatingIconGreen}`}>✓</div>
-                <div>
-                  <div style={{ fontWeight: 600 }}>500+ Placed</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>Globally</div>
+        {/* Floating Badges */}
+        <FloatingBadge text="Top 1% Talent" top="20%" left="10%" delay={1.5} floatDuration={6} />
+        <FloatingBadge text="Fast 48h Hiring" top="60%" right="15%" delay={1.8} floatDuration={5} />
+        <FloatingBadge text="Pre-Vetted" bottom="20%" left="20%" delay={2.1} floatDuration={7} />
+
+        <div className="max-w-4xl mx-auto px-6 text-center z-10 pt-20">
+          <AnimatedHeadline
+            text="Stop Applying Blindly. Start Getting Hired."
+            delay={0.2}
+            className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight text-brand-dark leading-tight justify-center mb-6"
+          />
+
+          <div className="min-h-[80px] mb-12">
+            <TypewriterText
+              text="We help candidates land full-time jobs in the US & UK and help companies hire pre-vetted talent faster."
+              delay={0.8}
+              className="text-lg md:text-xl text-brand-muted max-w-2xl mx-auto leading-relaxed"
+            />
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 1.2, duration: 0.6, type: "spring", damping: 10, stiffness: 150 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <Button href="/candidate" variant="primary" className="w-full sm:w-auto">
+              I'm a Candidate
+            </Button>
+            <Button href="/employer" variant="secondary" className="w-full sm:w-auto bg-white/50 backdrop-blur-sm">
+              I'm an Employer
+            </Button>
+          </motion.div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-brand-muted"
+        >
+          <span className="text-sm font-medium tracking-widest uppercase">Scroll</span>
+          <div className="w-0.5 h-12 bg-gradient-to-b from-brand-accent to-transparent" />
+        </motion.div>
+      </section>
+
+      {/* 2. TRUST LINE SECTION */}
+      <section className="py-12 border-y border-brand-border/40 bg-brand-surface/30">
+        <div className="text-center mb-10 px-6">
+          <p className="text-sm md:text-base font-medium text-brand-muted tracking-widest uppercase">
+            Trusted by candidates and companies across the US & UK
+          </p>
+        </div>
+        <InfiniteMarquee
+          speed={30}
+          items={[
+            <span key="1" className="font-heading font-bold text-3xl tracking-tighter text-brand-muted opacity-50 hover:opacity-100 transition-opacity hover:text-brand-accent cursor-default">FinTech</span>,
+            <span key="2" className="font-heading font-bold text-3xl tracking-widest text-brand-muted opacity-50 hover:opacity-100 transition-opacity hover:text-brand-accent cursor-default">AI & Machine Learning</span>,
+            <span key="3" className="font-heading font-bold text-3xl italic text-brand-muted opacity-50 hover:opacity-100 transition-opacity hover:text-brand-accent cursor-default">SaaS</span>,
+            <span key="4" className="font-heading font-bold text-3xl tracking-tighter text-brand-muted opacity-50 hover:opacity-100 transition-opacity hover:text-brand-accent cursor-default">HealthTech</span>,
+            <span key="5" className="font-heading font-bold text-3xl tracking-wider text-brand-muted opacity-50 hover:opacity-100 transition-opacity hover:text-brand-accent cursor-default">E-Commerce</span>,
+          ]}
+        />
+      </section>
+
+      {/* 3. WHY WE ARE DIFFERENT */}
+      <section className="py-24 px-6 relative bg-white">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <SectionHeading center={true}>Why We Are Different</SectionHeading>
+            <p className="text-xl md:text-2xl font-bold text-brand-accent max-w-3xl mx-auto">
+              We don't just apply for jobs — we build your hiring strategy.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              { title: "No random job applications", desc: "Every application is targeted, personalized, and strategic." },
+              { title: "No fake promises", desc: "Transparent tracking and realistic expectations, always." },
+              { title: "Strategic job targeting", desc: "We match skills exactly to what hiring managers seek." },
+              { title: "Real recruiter connections", desc: "Bypassing the ATS black hole via direct outreach." },
+              { title: "Dedicated support", desc: "1-on-1 guidance from strategy to salary negotiation." },
+            ].map((feature, i) => (
+              <Card key={i} delay={i * 0.1} className="flex gap-4">
+                <div className="mt-1 flex-shrink-0">
+                  <CheckCircle />
                 </div>
-              </motion.div>
-              <motion.div
-                className={styles.heroFloatingCard}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2, duration: 0.6 }}
-              >
-                <div className={`${styles.floatingIcon} ${styles.floatingIconBlue}`}>⭐</div>
                 <div>
-                  <div style={{ fontWeight: 600 }}>98% Satisfaction</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>Client Rating</div>
+                  <h3 className="text-xl font-bold mb-2 text-brand-dark">{feature.title}</h3>
+                  <p className="text-brand-muted leading-relaxed">{feature.desc}</p>
                 </div>
-              </motion.div>
-            </motion.div>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ===== Stats Section ===== */}
-      <section className={styles.stats}>
-        <div className="container">
-          <motion.div
-            className={styles.statsGrid}
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            {stats.map((stat, i) => (
-              <motion.div key={i} className={styles.statItem} variants={itemVariants}>
-                <div className={styles.statNumber}>
-                  <AnimatedCounter end={stat.number} suffix={stat.suffix} />
-                </div>
-                <div className={styles.statLabel}>{stat.label}</div>
-              </motion.div>
-            ))}
-          </motion.div>
+      {/* 4. STATS SECTION */}
+      <section className="py-24 px-6 bg-brand-dark text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5" />
+        <div className="max-w-6xl mx-auto relative z-10 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
+          {[
+            { num: 200, suffix: "+", label: "Candidates Placed" },
+            { num: 50, suffix: "+", label: "Hiring Partners" },
+            { num: 70, suffix: "%", label: "Interview Success Rate" },
+            { num: 48, prefix: "", suffix: "–72 Hrs", label: "Hiring Turnaround" },
+          ].map((stat, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={ready ? { opacity: 1, scale: 1 } : undefined}
+              viewport={ready ? { once: true, amount: 0.2 } : undefined}
+              transition={{ delay: i * 0.1, duration: 0.5, type: "spring", stiffness: 100 }}
+            >
+              <div className="text-4xl md:text-5xl lg:text-6xl font-bold font-heading text-brand-accent mb-2">
+                {stat.num === 48 ? (
+                  <span className="tabular-nums font-heading">
+                    48<span className="text-2xl md:text-4xl">{stat.suffix}</span>
+                  </span>
+                ) : (
+                  <AnimatedCounter end={stat.num} suffix={stat.suffix} prefix={stat.prefix} className="tabular-nums font-heading" />
+                )}
+              </div>
+              <p className="text-brand-muted font-medium">{stat.label}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-      {/* ===== Services Overview ===== */}
-      <section className={styles.servicesOverview}>
-        <div className="container">
-          <ScrollReveal>
-            <div className="section__header">
-              <span className="section__label">What We Offer</span>
-              <h2 className="section__title">Comprehensive Career Services</h2>
-              <p className="section__subtitle">
-                Tailored support at every stage of your career journey — from resume crafting to successful placement.
-              </p>
-            </div>
-          </ScrollReveal>
+      {/* 5. SERVICES SNAPSHOT */}
+      <section className="py-24 px-6 bg-brand-bg relative">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16">
 
-          <motion.div
-            className={styles.servicesGrid}
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-          >
-            {services.map((service, i) => (
-              <motion.article key={i} className={styles.serviceCard} variants={itemVariants}>
-                <div className={styles.serviceIcon}>{service.icon}</div>
-                <h3 className={styles.serviceTitle}>{service.title}</h3>
-                <p className={styles.serviceDescription}>{service.description}</p>
-                <Link href="/services" className={styles.serviceLink}>
-                  Learn More →
-                </Link>
-              </motion.article>
-            ))}
-          </motion.div>
+            {/* For Candidates */}
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={ready ? { opacity: 1, y: 0 } : undefined}
+              viewport={ready ? { once: true, amount: 0.2 } : undefined}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="bg-white rounded-3xl p-8 md:p-12 shadow-warm-lg border border-brand-border"
+            >
+              <div className="w-16 h-16 bg-brand-accent/10 rounded-2xl flex items-center justify-center mb-8">
+                <UserIcon />
+              </div>
+              <SectionHeading className="!mb-8 !mt-0">For Candidates</SectionHeading>
+              <ul className="space-y-6">
+                {["Resume optimization", "LinkedIn optimization", "Targeted Job applications", "Comprehensive Interview prep"].map((item, i) => (
+                  <li key={i} className="flex items-center gap-4 text-lg text-brand-dark font-medium">
+                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-brand-bg flex items-center justify-center">
+                      <CheckCircle />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-10 pt-8 border-t border-brand-border">
+                <Button href="/candidate" variant="outline" className="w-full">Explore Candidate Services</Button>
+              </div>
+            </motion.div>
+
+            {/* For Employers */}
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={ready ? { opacity: 1, y: 0 } : undefined}
+              viewport={ready ? { once: true, amount: 0.2 } : undefined}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              className="bg-brand-dark text-white rounded-3xl p-8 md:p-12 shadow-2xl shadow-brand-dark/20 border border-white/10"
+            >
+              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-8">
+                <BriefcaseIcon />
+              </div>
+              <h2 className="text-3xl md:text-4xl mb-8 font-heading font-bold text-white relative inline-block group">
+                For Employers
+                <motion.div
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "30%" }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                  className="absolute -bottom-2 left-0 h-1.5 bg-brand-accent z-0"
+                />
+              </h2>
+              <ul className="space-y-6">
+                {["Pre-vetted candidates", "Fast 48-72h hiring turnaround", "Contract & full-time staffing", "Dedicated technical screening"].map((item, i) => (
+                  <li key={i} className="flex items-center gap-4 text-lg font-medium text-white/90">
+                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-brand-accent">
+                      ✓
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-10 pt-8 border-t border-white/10">
+                <Button href="/employer" variant="primary" className="w-full">Hire Talent Now</Button>
+              </div>
+            </motion.div>
+
+          </div>
         </div>
       </section>
 
-      {/* ===== Why Choose Us ===== */}
-      <section className={styles.whyChoose}>
-        <div className="container">
-          <ScrollReveal>
-            <div className="section__header">
-              <span className="section__label">Why Choose Us</span>
-              <h2 className="section__title">Built for Your Success</h2>
-              <p className="section__subtitle">
-                We go beyond traditional career services to deliver results that matter.
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <motion.div
-            className={styles.whyGrid}
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            {whyChoose.map((item, i) => (
-              <motion.div key={i} className={styles.whyItem} variants={itemVariants}>
-                <div className={styles.whyIcon}>{item.icon}</div>
-                <h3 className={styles.whyTitle}>{item.title}</h3>
-                <p className={styles.whyDescription}>{item.description}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+      {/* 6. TESTIMONIALS */}
+      <section className="py-24 px-6 overflow-hidden bg-white">
+        <div className="max-w-6xl mx-auto mb-16 text-center">
+          <SectionHeading center={true}>Trusted by the Best</SectionHeading>
+          <p className="text-xl text-brand-muted">Real stories from our candidates and hiring partners.</p>
         </div>
-      </section>
 
-      {/* ===== Testimonials ===== */}
-      <section className={styles.testimonials}>
-        <div className="container">
-          <ScrollReveal>
-            <div className="section__header">
-              <span className="section__label">Success Stories</span>
-              <h2 className="section__title">What Our Clients Say</h2>
-              <p className="section__subtitle">
-                Hear from candidates who have successfully secured roles in top global markets.
-              </p>
-            </div>
-          </ScrollReveal>
-
-          <motion.div
-            className={styles.testimonialsGrid}
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
+        <div className="max-w-7xl mx-auto px-4 md:px-0">
+          <Swiper
+            modules={[Autoplay, Pagination, Navigation]}
+            spaceBetween={30}
+            slidesPerView={1}
+            speed={1000}
+            breakpoints={{
+              640: { slidesPerView: 1 },
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+            }}
+            autoplay={{ delay: 3000, disableOnInteraction: true }}
+            pagination={{ clickable: true }}
+            className="pb-16 px-4"
           >
-            {testimonials.map((t, i) => (
-              <motion.article key={i} className={styles.testimonialCard} variants={itemVariants}>
-                <div className={styles.quoteIcon}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
-                  </svg>
-                </div>
-                <p className={styles.testimonialText}>&ldquo;{t.text}&rdquo;</p>
-                <div className={styles.testimonialAuthor}>
-                  <Image
-                    src={t.image}
-                    alt={t.name}
-                    width={48}
-                    height={48}
-                    className={styles.authorImage}
-                  />
+            {testimonials.map((testimonial, i) => (
+              <SwiperSlide key={i} className="h-auto">
+                <div className="bg-brand-bg rounded-2xl p-8 h-full flex flex-col border border-brand-border transition-all hover:shadow-warm-lg">
+                  <div className="flex gap-1 mb-6">
+                    {[1, 2, 3, 4, 5].map((star) => <StarIcon key={star} />)}
+                  </div>
+                  <p className="text-brand-dark font-medium leading-relaxed mb-8 flex-grow text-lg italic">
+                    "{testimonial.text}"
+                  </p>
                   <div>
-                    <div className={styles.authorName}>{t.name}</div>
-                    <div className={styles.authorRole}>{t.role}</div>
+                    <p className="font-bold font-heading text-brand-dark mb-1">{testimonial.name}</p>
+                    <p className="text-sm text-brand-muted">{testimonial.role}</p>
                   </div>
                 </div>
-              </motion.article>
+              </SwiperSlide>
             ))}
-          </motion.div>
+          </Swiper>
         </div>
       </section>
 
-      {/* ===== CTA Banner ===== */}
-      <section className={styles.ctaBanner}>
-        <div className="container">
-          <ScrollReveal>
-            <div className={styles.ctaInner}>
-              <div className={styles.ctaContent}>
-                <h2 className={styles.ctaTitle}>Ready to Launch Your Career?</h2>
-                <p className={styles.ctaSubtext}>
-                  Join hundreds of international professionals who have successfully transitioned
-                  into rewarding roles in the US and UK markets.
-                </p>
-                <div className={styles.ctaButtons}>
-                  <Link href="/contact" className="btn btn--primary btn--large">
-                    Get Started Today
-                  </Link>
-                  <Link href="/services" className="btn btn--secondary btn--large">
-                    View Our Services
-                  </Link>
-                </div>
-              </div>
+      {/* 7. FINAL CTA */}
+      <section className="py-24 px-6 relative overflow-hidden">
+        {/* Gradient Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-dark via-[#212745] to-brand-secondary z-0" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 z-0" />
+
+        <div className="max-w-4xl mx-auto relative z-10 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-4xl md:text-5xl lg:text-6xl text-white mb-6">Start Your Journey Today</h2>
+            <p className="text-xl md:text-2xl text-white/80 mb-10 max-w-2xl mx-auto font-light">
+              Book a Free Strategy Call
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button href="/contact" variant="primary" className="w-full sm:w-auto text-lg shadow-[0_0_40px_rgba(200,135,58,0.4)]">
+                Get Started
+              </Button>
+              <Button href="/contact" variant="secondary" className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 text-lg">
+                Book a Call
+              </Button>
             </div>
-          </ScrollReveal>
+          </motion.div>
         </div>
       </section>
     </>
